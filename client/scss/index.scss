@@ -1,6 +1,8 @@
+$white: #FFF;
 $accent: #0720FF;
+$baseColorAccent: #DDD;
 $baseColor: #FAFAFA;
-$baseColorEmphasis: #FFF;
+$baseColorEmphasis: $white;
 $baseSubtle: #EEE;
 $primary: #222;
 
@@ -24,7 +26,39 @@ a {
   color: $accent;
 }
 
+.submit {
+  background: $accent;
+  border: 1px solid $baseSubtle;
+  border-radius: 2px;
+  color: $white;
+  display: block;
+  height: 2.25rem;
+  margin: 0 auto .5rem;
+  max-width: 22.5rem;
+  padding: .5rem 1rem;
+  -webkit-appearance: none;
+
+  &.-inverted {
+    background: $white;
+    color: $accent;
+  }
+
+  &.-no-margin {
+    margin: 0;
+  }
+
+  &-link {
+    font-weight: bold;
+    height: auto;
+    padding: 0.75rem;
+    text-align: center;
+    text-decoration: none;
+  }
+
+}
+
 .header {
+  align-items: center;
   background: $baseColorEmphasis;
   border-bottom: 1px solid $baseSubtle;
   display: flex;
@@ -38,14 +72,111 @@ a {
   .header__submit {
     margin: 0;
   }
+
+  &.-centered {
+    padding: $baseVerticalPadding/2 $baseHorizontalPadding;
+  }
 }
 
+.menu-button {
+  -webkit-appearance: none;
+  background: none;
+  border: 1px solid $baseSubtle;
+  border-radius: 2px;
+  width: 2rem;
+  height: 2rem;
+
+  svg {
+    width: 100%;
+  }
+}
 
 .logo {
   width: 7.5rem;
 
   svg {
     width: 100%;
+  }
+
+  &.-small {
+    width: 4.5rem;
+  }
+}
+
+.side-menu {
+  background: $white;
+  border-radius: 2px;
+  border: 1px solid $baseSubtle;
+  left: -50rem;
+  padding: 2.5rem 2rem;
+  position: absolute;
+  top: 3.5rem;
+
+  &.-opened {
+    left: 0;
+  }
+
+  .side-menu__sign-out {
+    margin-left: .75rem;
+  }
+}
+
+.side-menu__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.side-menu__links-list {
+  list-style: none;
+  padding: 0;
+}
+
+.side-menu__links-list-item {
+  padding: .75rem;
+  width: 100%;
+}
+
+.side-menu__divider {
+  border: 1px solid $baseSubtle;
+}
+
+.fieldset {
+  border: none;
+  padding: 1rem 0;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  padding-bottom: .5rem;
+}
+
+.label-support {
+  display: none;
+  font-size: .85rem;
+  font-style: italic;
+}
+
+.input {
+  display: block;
+  font-size: 1rem;
+  -webkit-appearance: none;
+
+  &.-text {
+    border: 1px solid $baseColorAccent;
+    max-width: 22rem;
+    padding: .75rem 1rem;
+    width: 100%;
+  }
+
+  &.-textarea {
+    width: 100%;
+    height: 6rem;
+    resize: vertical;
+    border: 1px solid $baseColorAccent;
+    padding: 1rem;
+    line-height: 1.25;
   }
 }
 
@@ -67,6 +198,68 @@ a {
 
 .banner-subtitle {
   width: 75%;
+}
+
+.image-selector {
+  position: relative;
+
+  &.-preview {
+    background-size: cover;
+    height: 320px;
+    width: 320px;
+  }
+
+  &__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  &__selector {
+    background: #EEE;
+    border: 1px solid #DDD;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  &__text {
+    font-style: oblique;
+    margin: 0;
+  }
+
+  &__icon {
+    margin: 0 0 1rem;
+  }
+}
+
+.feature-banner {
+  background:
+    linear-gradient(90deg, #FAFAFA 8px, transparent 1%) 95px 100px,
+    linear-gradient(#FAFAFA 8px, transparent 1%),
+    #DDD;
+  background-size: 10px 10px;
+  padding: 2.5rem;
+  @media screen and (min-width: 45rem) {
+    margin: 2.5rem;
+  }
+
+  &__title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  &__subtitle {
+    font-size: 1.6rem;
+    font-weight: normal;
+  }
+
+  &__disclaimer {
+    font-size: .75rem;
+    font-style: oblique;
+    margin: 0;
+    text-align: center;
+  }
 }
 
 .features {
@@ -101,17 +294,6 @@ a {
   }
 }
 
-.submit {
-  background: $accent;
-  border: 1px solid $baseSubtle;
-  color: #FFF;
-  display: block;
-  height: 2.25rem;
-  margin: 0 auto .5rem;
-  max-width: 22.5rem;
-  padding: .5rem 1rem;
-  -webkit-appearance: none;
-}
 
 .newsletter {
   padding: $baseVerticalPadding * 2 $baseHorizontalPadding;
@@ -162,7 +344,7 @@ a {
 }
 
 .footer {
-  background: #FFF;
+  background: $white;
   border-top: 1px solid #EEE;
   margin-top: 2.5rem;
   padding: 1.5rem 1rem;
@@ -189,4 +371,8 @@ a {
   &::marker {
     font-size: .75rem;
   }
+}
+
+.create-project {
+  padding: 1rem;
 }

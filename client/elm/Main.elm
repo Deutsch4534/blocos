@@ -43,7 +43,7 @@ type alias Flag =
 
 
 type alias Model =
-    { page : Router.Page, key : Nav.Key, user : Session.User, projects : Project.Model }
+    { page : Router.Page, key : Nav.Key, user : Session.User, projects : Project.Model, sidebar : Skeleton.Model }
 
 
 
@@ -58,17 +58,10 @@ init ( seed, seedExtension ) url navKey =
             , page = Router.route url
             , user = ( Session.Anonymous, Nothing )
             , projects = ( Project.emptyProject, [], initialSeed seed seedExtension )
+            , sidebar = Skeleton.Closed
             }
     in
     ( model, Cmd.none )
-
-
-
--- @TODO: get this on init
-
-
-currentChecksum =
-    "123"
 
 
 
@@ -97,24 +90,19 @@ view model =
                     , body = Skeleton.content SessionMsg SessionMsg <| Home.view model.user
                     }
 
-                Router.Proof ->
-                    { title = Proof.title
-                    , body = Skeleton.content ProofMsg SessionMsg <| Proof.view currentChecksum
-                    }
-
                 Router.Dashboard ->
                     { title = Dashboard.title
-                    , body = Skeleton.application ProjectMsg SessionMsg <| Dashboard.view model.user model.projects
+                    , body = Skeleton.application ProjectMsg SessionMsg SkeletonMsg model.sidebar <| Dashboard.view model.user model.projects
                     }
 
                 Router.CreateProject ->
                     { title = Project.createProjectTitle
-                    , body = Skeleton.application ProjectMsg SessionMsg <| Project.createProjectView model.user model.projects
+                    , body = Skeleton.application ProjectMsg SessionMsg SkeletonMsg model.sidebar <| Project.createProjectView model.user model.projects
                     }
 
                 Router.EditProject uuid ->
                     { title = Project.editProjectTitle
-                    , body = Skeleton.application ProjectMsg SessionMsg <| Project.editProjectView model.user model.projects
+                    , body = Skeleton.application ProjectMsg SessionMsg SkeletonMsg model.sidebar <| Project.editProjectView model.user model.projects
                     }
 
                 _ ->
@@ -134,6 +122,7 @@ type ProxyMsg
     = SessionMsg Session.Msg
     | ProofMsg Proof.Msg
     | ProjectMsg Project.Msg
+    | SkeletonMsg Skeleton.Msg
     | NotFoundMsg NotFound.Msg
 
 
@@ -153,6 +142,9 @@ proxyMsg msg model =
                     Project.update projectMsg model.projects model.key
             in
             ( { model | projects = newProjects }, Cmd.map Forward <| Cmd.map ProjectMsg projectCmds )
+
+        SkeletonMsg skeletonMsg ->
+            ( { model | sidebar = Skeleton.update model.sidebar skeletonMsg }, Cmd.none )
 
         _ ->
             ( model, Cmd.none )

@@ -27,32 +27,42 @@ title =
 
 
 view : Session.User -> Project.Model -> Html.Html Project.Msg
-view user ( project, projects, _ ) =
+view _ ( _, projects, _ ) =
     let
-        username =
-            case user of
-                ( Session.LoggedIn, Just userData ) ->
-                    userData.username
+        renderCreatedProjects =
+            if List.length projects == 0 then
+                Html.article
+                    [ Attributes.class "feature-banner" ]
+                    [ Html.h1 [ Attributes.class "feature-banner__title" ] [ Html.text "Time to make it happen" ]
+                    , Html.h2 [ Attributes.class "feature-banner__subtitle" ] [ Html.text "Get your community together and start your next big thing" ]
+                    , Html.a [ Attributes.class "submit submit-link", Attributes.href <| Project.createProjectRoute ] [ Html.text "start new project" ]
+                    , Html.p [ Attributes.class "feature-banner__disclaimer" ] [ Html.text "powered by Bitcoin" ]
+                    ]
 
-                _ ->
-                    "Anonymous"
+            else
+                Html.article
+                    [ Attributes.class "projects created-projects" ]
+                    [ Html.h1 [ Attributes.class "dashboard-title" ] [ Html.text "Created projects" ]
+                    , Html.ul [ Attributes.class "projects-list" ]
+                        (List.map
+                            (\projectItem ->
+                                Html.li [ Attributes.class "projecs-list projects-list__item" ]
+                                    [ Html.a
+                                        [ Attributes.class "project-link link"
+                                        , Attributes.href (Project.getEditProjectRoute projectItem)
+                                        , Events.onClick <| Project.EditProject projectItem
+                                        ]
+                                        [ Html.text projectItem.title ]
+                                    ]
+                            )
+                            projects
+                        )
+                    ]
+
+        renderBackedProjects =
+            Html.div [ Attributes.class "projects backed-projects" ] []
     in
-    Html.section [ Attributes.class "home content" ]
-        [ Html.p [ Attributes.class "text" ] [ Html.text username ]
-        , Html.a [ Attributes.class "link", Attributes.href <| Project.createProjectRoute ] [ Html.text "+ create new project" ]
-        , Html.h2 [ Attributes.class "subtitle" ] [ Html.text "Drafts" ]
-        , Html.ul [ Attributes.class "projects-list" ]
-            (List.map
-                (\projectItem ->
-                    Html.li [ Attributes.class "projecs-list projects-list__item" ]
-                        [ Html.a
-                            [ Attributes.class "project-link link"
-                            , Attributes.href (Project.getEditProjectRoute projectItem)
-                            , Events.onClick <| Project.EditProject projectItem
-                            ]
-                            [ Html.text projectItem.title ]
-                        ]
-                )
-                projects
-            )
+    Html.section [ Attributes.class "dashboard" ]
+        [ renderCreatedProjects
+        , renderBackedProjects
         ]

@@ -1,10 +1,10 @@
 {
-  "name": "Blocos, descentralized crowdfunding",
+  "name": "Blocos, bitcoin powered crowdfunding",
   "start_url": "localhost:8000",
-  "description": "A descentralized crowdfunding platform",
+  "description": "A bitcoin fuelled crowdfunding platform",
   "icons": [{
-    "src": "https://helloblockstack.com/icon-192x192.png",
-    "sizes": "192x192",
+    "src": "https://blocos.app/favicon-196x196.png",
+    "sizes": "196x196",
     "type": "image/png"
   }]
 }

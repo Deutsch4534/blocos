@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/blocosapp/blocos#readme",
   "dependencies": {
-    "blockstack": "^19.0.0",
+    "blockstack": "^19.1.0",
     "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "express": "^4.16.4",

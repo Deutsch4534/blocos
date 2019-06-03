@@ -13,7 +13,7 @@ type Session
 
 
 type alias UserData =
-    { username : String }
+    { username : String, name : Maybe String, profilePicture : Maybe String }
 
 
 type alias User =
@@ -39,13 +39,16 @@ decodeUser value =
             ( LoggedIn, Just userData )
 
         Err error ->
-            ( Anonymous, Just { username = Decode.errorToString error } )
+            -- ( Anonymous, Just { username = Decode.errorToString error } )
+            ( Anonymous, Nothing )
 
 
 userDataDecoder : Decode.Decoder UserData
 userDataDecoder =
-    Decode.map UserData
+    Decode.map3 UserData
         (Decode.field "username" Decode.string)
+        (Decode.field "name" (Decode.nullable Decode.string))
+        (Decode.field "profilePicture" (Decode.nullable Decode.string))
 
 
 subscriptions : User -> Sub Msg

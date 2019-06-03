@@ -13,9 +13,11 @@ type Project = {
 function authenticate (): void {
   blockstack
     .redirectToSignIn(
-      'https://in.blocos.app',
-      'https://blocos.app/manifest.json',
-      ['scope']
+      // 'https://blocos.app',
+      // 'https://blocos.app/manifest.json',
+      'http://localhost:8000',
+      'http://localhost:8000/manifest.json',
+      ['publish_data']
     )
 }
 
@@ -28,10 +30,16 @@ export function handleAuthentication (app: App): void {
   app.ports.signOut.subscribe(signOut)
 
   if (blockstack.isUserSignedIn()) {
+    // TODO:replace loadUserData as it is now deprecated
     const user = blockstack.loadUserData()
     if (user) {
-      app.ports.authenticated.send(user)
-      return fetchSavedFiles(app)
+      app.ports.authenticated.send({
+        username: user.username,
+        name: 'name',
+        profilePicture: 'https://profile.picture'
+      })
+      const profile = new blockstack.Person(user.profile)
+      fetchSavedFiles(app)
     }
   }
 
@@ -40,8 +48,12 @@ export function handleAuthentication (app: App): void {
       .handlePendingSignIn()
       .then(user => {
         if (user) {
-          app.ports.authenticated.send(user)
-          return fetchSavedFiles(app)
+          app.ports.authenticated.send({
+            username: user.username,
+            name: 'name',
+            profilePicture: 'https://profile.picture'
+          })
+          fetchSavedFiles(app)
         }
       })
       .catch()
@@ -77,9 +89,11 @@ function fetchFile (app: App): (arg0: string) => boolean {
     blockstack
       .getFile(filePath, null)
       .then(savedFile => {
-        const parsedFile = parseFile(savedFile)
-        if (parsedFile) {
-          app.ports.fileSaved.send(parsedFile)
+        if (typeof savedFile === 'string') {
+          const parsedFile = parseFile(savedFile)
+          if (parsedFile) {
+            app.ports.fileSaved.send(parsedFile)
+          }
         }
       })
       .catch(console.error)
@@ -107,6 +121,7 @@ function subscribeToPutFile (app: App, fileSaved: (arg0: Project) => void) {
 function subscribeToDeleteFile (app: App, fileDeleted: (data: null) => void) {
   app.ports.deleteFile.subscribe(project => {
     const fileName = project.uuid + '.json'
+    // TODO: replace empty putfile for deleteFile
     blockstack
       .putFile(fileName, '')
       .then(() => fileDeleted(null))

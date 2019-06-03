@@ -5,11 +5,14 @@ import Prng.Uuid as Uuid
 
 
 type alias ProjectFile =
-    { address : Maybe String
+    { uuid : String
+    , address : Maybe String
+    , cardImageUrl : String
+    , coverImageUrl : String
     , description : String
-    , featuredImageUrl : String
     , goal : Float
-    , uuid : String
+    , projectVideoUrl : String
+    , tagline : String
     , title : String
     }
 
