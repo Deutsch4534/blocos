@@ -2,12 +2,15 @@ import * as blockstack from 'blockstack'
 import { App } from './application'
 
 type Project = {
-  uuid: string,
   address: string,
+  cardImageUrl: string,
+  coverImageUrl: string,
   description: string,
-  featuredImageUrl: string,
   goal: number,
-  title: string
+  projectVideoUrl: string,
+  tagline: string,
+  title: string,
+  uuid: string
 }
 
 function authenticate (): void {
@@ -56,7 +59,7 @@ export function handleAuthentication (app: App): void {
           fetchSavedFiles(app)
         }
       })
-      .catch()
+      .catch(console.error)
   }
 }
 
@@ -75,9 +78,12 @@ function parseFile (fileContent: string): Project | null {
       uuid: parsedFile.uuid,
       address: parsedFile.address || '',
       description: parsedFile.description || '',
-      featuredImageUrl: parsedFile.featuredImageUrl || '',
       goal: typeof parsedFile.goal === 'number' ? parsedFile.goal : 0,
-      title: parsedFile.title || ''
+      title: parsedFile.title || '',
+      cardImageUrl: parsedFile.cardImageUrl || '',
+      coverImageUrl: parsedFile.coverImageUrl || '',
+      projectVideoUrl: parsedFile.projectVideoUrl || '',
+      tagline: parsedFile.tagline || ''
     }
   } catch (error) {
     console.error(error)
@@ -101,6 +107,7 @@ function fetchFile (app: App): (arg0: string) => boolean {
   }
 }
 
+// @TODO: add a flag to tell if still waiting for files to be fetched or not
 function fetchSavedFiles (app: App): void {
   blockstack
     .listFiles(fetchFile(app))
@@ -109,12 +116,18 @@ function fetchSavedFiles (app: App): void {
 
 function subscribeToPutFile (app: App, fileSaved: (arg0: Project) => void) {
   app.ports.putFile.subscribe(project => {
+    console.log('saving...')
+    console.log({ project })
     const fileName = project.uuid
-    const fileContent = JSON.stringify(project)
-    blockstack
-      .putFile(fileName + '.json', fileContent)
-      .then(() => fileSaved(project))
-      .catch(console.error)
+    try {
+      const fileContent = JSON.stringify(project)
+      blockstack
+        .putFile(fileName + '.json', fileContent)
+        .then(() => fileSaved(project))
+        .catch(console.error)
+    } catch (e) {
+      console.error(e)
+    }
   })
 }
 

@@ -102,7 +102,7 @@ view model =
 
                 Router.EditProject uuid ->
                     { title = Project.editProjectTitle
-                    , body = Skeleton.application ProjectMsg SessionMsg SkeletonMsg model.sidebar <| Project.editProjectView model.user model.projects
+                    , body = Skeleton.application ProjectMsg SessionMsg SkeletonMsg model.sidebar <| Project.createProjectView model.user model.projects
                     }
 
                 _ ->

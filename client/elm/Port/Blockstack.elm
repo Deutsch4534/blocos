@@ -4,6 +4,10 @@ import Json.Encode as E
 import Prng.Uuid as Uuid
 
 
+type alias ProjectFileReward =
+    { id : Int, title : String, contribution : Float, description : String }
+
+
 type alias ProjectFile =
     { uuid : String
     , address : Maybe String
@@ -12,6 +16,7 @@ type alias ProjectFile =
     , description : String
     , goal : Float
     , projectVideoUrl : String
+    , rewards : List ProjectFileReward
     , tagline : String
     , title : String
     }

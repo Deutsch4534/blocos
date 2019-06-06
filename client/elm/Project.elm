@@ -45,6 +45,10 @@ type alias WalletAddress =
     String
 
 
+type alias Reward =
+    { id : Int, title : String, contribution : Float, description : String }
+
+
 type alias Project =
     { uuid : Maybe Uuid.Uuid
     , address : Maybe WalletAddress
@@ -53,6 +57,7 @@ type alias Project =
     , description : String
     , goal : Float
     , projectVideoUrl : String
+    , rewards : List Reward
     , status : ProjectStatus
     , tagline : String
     , title : String
@@ -72,6 +77,7 @@ emptyProject =
     , description = ""
     , goal = 0.0
     , projectVideoUrl = ""
+    , rewards = []
     , status = Saved
     , tagline = ""
     , title = ""
@@ -96,6 +102,10 @@ type Msg
     | ChangeTitle String
     | ChangeDescription String
     | ChangeGoal String
+    | AddReward
+    | ChangeRewardTitle Reward String
+    | ChangeRewardDescription Reward String
+    | ChangeRewardContribution Reward String
     | EditProject Project
 
 
@@ -132,6 +142,7 @@ parseProjectToFile project =
     , description = project.description
     , goal = project.goal
     , projectVideoUrl = project.projectVideoUrl
+    , rewards = project.rewards
     , tagline = project.tagline
     , title = project.title
     }
@@ -146,6 +157,7 @@ parseFileToProject projectFile =
     , description = projectFile.description
     , goal = projectFile.goal
     , projectVideoUrl = projectFile.projectVideoUrl
+    , rewards = projectFile.rewards
     , status = Saved
     , tagline = projectFile.tagline
     , title = projectFile.title
@@ -332,6 +344,70 @@ update msg ( project, projects, seed ) navKey =
         ChangeProjectVideo newProjectVideoUrl ->
             ( ( { project | projectVideoUrl = newProjectVideoUrl, status = Unsaved }, projects, seed ), Cmd.none )
 
+        AddReward ->
+            let
+                emptyReward =
+                    { id = List.length project.rewards + 1, title = "", description = "", contribution = 0 }
+
+                rewards =
+                    if List.length project.rewards > 7 then
+                        project.rewards
+
+                    else
+                        project.rewards ++ [ emptyReward ]
+            in
+            ( ( { project | rewards = rewards }, projects, seed ), Cmd.none )
+
+        ChangeRewardTitle rewardToUpdate title ->
+            let
+                updateReward reward =
+                    if rewardToUpdate.id == reward.id then
+                        { reward | title = title }
+
+                    else
+                        reward
+
+                rewards =
+                    List.map updateReward project.rewards
+            in
+            ( ( { project | rewards = rewards }, projects, seed ), Cmd.none )
+
+        ChangeRewardContribution rewardToUpdate maybeContribution ->
+            let
+                contribution =
+                    case String.toFloat maybeContribution of
+                        Just value ->
+                            value
+
+                        Nothing ->
+                            0
+
+                updateReward reward =
+                    if rewardToUpdate.id == reward.id then
+                        { reward | contribution = contribution }
+
+                    else
+                        reward
+
+                rewards =
+                    List.map updateReward project.rewards
+            in
+            ( ( { project | rewards = rewards }, projects, seed ), Cmd.none )
+
+        ChangeRewardDescription rewardToUpdate description ->
+            let
+                updateReward reward =
+                    if rewardToUpdate.id == reward.id then
+                        { reward | description = description }
+
+                    else
+                        reward
+
+                rewards =
+                    List.map updateReward project.rewards
+            in
+            ( ( { project | rewards = rewards }, projects, seed ), Cmd.none )
+
         ChangeGoal maybeNewGoal ->
             let
                 newGoal =
@@ -352,7 +428,7 @@ createProjectRoute =
 
 createProjectTitle : String
 createProjectTitle =
-    "Create your new descentralized crowdfunding project - Blocos"
+    "Create your new decentralized crowdfunding project - Blocos"
 
 
 editProjectTitle : String

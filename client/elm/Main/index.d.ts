@@ -13,10 +13,10 @@ export namespace Elm {
           subscribe(callback: (data: null) => void): void
         }
         putFile: {
-          subscribe(callback: (data: { address: string | null; description: string; featuredImageUrl: string; goal: number; uuid: string; title: string }) => void): void
+          subscribe(callback: (data: { uuid: string; address: string | null; cardImageUrl: string; coverImageUrl: string; description: string; goal: number; projectVideoUrl: string; tagline: string; title: string }) => void): void
         }
         deleteFile: {
-          subscribe(callback: (data: { address: string | null; description: string; featuredImageUrl: string; goal: number; uuid: string; title: string }) => void): void
+          subscribe(callback: (data: { uuid: string; address: string | null; cardImageUrl: string; coverImageUrl: string; description: string; goal: number; projectVideoUrl: string; tagline: string; title: string }) => void): void
         }
         checkAuthentication: {
           subscribe(callback: (data: null) => void): void
@@ -25,7 +25,7 @@ export namespace Elm {
           send(data: unknown): void
         }
         fileSaved: {
-          send(data: { address: string | null; description: string; featuredImageUrl: string; goal: number; uuid: string; title: string }): void
+          send(data: { uuid: string; address: string | null; cardImageUrl: string; coverImageUrl: string; description: string; goal: number; projectVideoUrl: string; tagline: string; title: string }): void
         }
         fileDeleted: {
           send(data: null): void
